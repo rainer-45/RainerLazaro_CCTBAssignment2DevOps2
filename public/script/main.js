@@ -4,12 +4,12 @@ document.getElementById("teamForm").addEventListener("submit", function(event) {
   let name = document.getElementById("name").value.trim();
   let email = document.getElementById("email").value.trim();
   let role = document.getElementById("role").value.trim();
-  let errorMsg = document.getElementById("errorMsg");
+  let textMsg = document.getElementById("textMsg");
 
   if (name === "" || email === "" || role === "") {
-      errorMsg.textContent = "All fields are required!";
+      textMsg.textContent = "All fields are required!";
   } else {
-    errorMsg.textContent = "Registration successful!";
+    textMsg.textContent = "Registration successful!";
     this.reset();
   }
 });
