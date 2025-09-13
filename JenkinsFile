@@ -29,13 +29,13 @@ pipeline{
                     sh 'npm install selenium-webdriver'
 
                     //Run the failed test and capture the output
-                    def output = sh(script: 'node test/test1.js', returnStdout: true).trim()
+                    def output = sh(script: 'node /public/test/test1.js', returnStdout: true).trim()
 
                     //Debugging printing the output
                     echo "Test Output: ${output}"
                     
                     //Run the passed test and capture the output
-                    output = sh(script: 'node test/test_validation.js', returnStdout: true).trim()
+                    output = sh(script: 'node /public/test/test_validation.js', returnStdout: true).trim()
 
                     //Debugging printing the output
                     echo "Test Output: ${output}"
