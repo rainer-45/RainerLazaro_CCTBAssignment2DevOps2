@@ -76,7 +76,7 @@ pipeline{
              }
             steps{
             echo 'Deploying to Production...'
-            sh 'ssh-keyscan -H 3.91.56.136 >> ~/.ssh/known_hosts'
+            //sh 'ssh-keyscan -H 3.91.56.136 >> ~/.ssh/known_hosts'
             sh """
             sudo ssh -i /home/ec2-user/selenium-tests/keypair.pem ec2-user@$PRODUCTION_SERVER 'sudo rm -rf /var/www/html/*'
             sudo ssh -i /home/ec2-user/selenium-tests/keypair.pem ec2-user@$PRODUCTION_SERVER "git clone $REPO_URL /var/www/html"
