@@ -1,4 +1,4 @@
-const { Builder, By } = require('selenium-webdriver');
+const { Builder, By, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 
 (async function testForm() {
@@ -14,19 +14,29 @@ const chrome = require('selenium-webdriver/chrome');
 
     try {
         // Replace this with your page URL
-        await driver.get('http://172.31.26.43');
+        await driver.get('http://18.215.174.194');
 
         // Fill the form
         await driver.findElement(By.name('name')).sendKeys('Rainer');
-        await driver.findElement(By.name('email')).sendKeys('rainer@example.com');
+        await driver.findElement(By.name('email')).sendKeys('rainer@cctb.com');
         await driver.findElement(By.name('role')).sendKeys('Developer');
 
         // Submit the form
-        await driver.findElement(By.css('button[type="submit"]')).click();
+        await driver.findElement(By.id('teamForm')).submit();
 
-        console.log("Test Success");
-} catch (e) {
-    console.log('Test Failed', e);
+        // Wait for error message to appear
+        const errorMsg = await driver.wait(
+            until.elementLocated(By.id('errorMsg')),
+            2000
+        );
+
+        const text = await errorMsg.getText();
+        if (text === "All fields are required!") {
+            console.log("Test Failed");
+            process.exit(1);
+      } else {
+            console.log("Test Passed");
+        }
     } finally {
         await driver.quit();
     }

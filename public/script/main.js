@@ -7,10 +7,9 @@ document.getElementById("teamForm").addEventListener("submit", function(event) {
   let errorMsg = document.getElementById("errorMsg");
 
   if (name === "" || email === "" || role === "") {
-    errorMsg.textContent = "All fields are required!";
+      errorMsg.textContent = "All fields are required!";
   } else {
-    errorMsg.textContent = "";
-    alert("Registration successful!");
+    errorMsg.textContent = "Registration successful!";
     this.reset();
   }
 });
