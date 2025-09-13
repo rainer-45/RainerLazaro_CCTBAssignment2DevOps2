@@ -1,48 +1,66 @@
-pipeline {
+pipeline{
     agent any
     environment {
-        TEST_RESULT_FILE = 'test_result.txt'
-        REPO_URL = 'https://github.com/rainer-45/RainerLazaro_CCTBAssignment2DevOps2'
-        TESTING_SERVER = '18.215.174.194'
-        PRODUCTION_SERVER = '3.91.56.136'
+    TEST_RESULT_FILE = 'test_result.txt'
     }
 
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Building Website...'
-                // Add build steps here if needed (npm install, etc.)
+ stages{
+        stage('Building'){
+            steps{
+                echo 'Building...'
             }
-        }
+        } 
+        stage('Testing Environment'){
+            steps{
+              script{
+                try{
+                    //Install Selenium webdriver
+                    sh 'npm install selenium-webdriver'
+                    
+                    //Run the test and capture the output
+                    def output = sh(script: 'node test/test1.js', returnStdout: true).trim()
 
-        stage('Deploy to Testing') {
-            steps {
-                echo 'Deploying to Testing Server...'
-               // Already deployed 
-		// sh """
-               // ssh ec2-user@$TESTING_SERVER "sudo rm -rf /var/www/html/*"
-               // ssh ec2-user@$TESTING_SERVER "git clone $REPO_URL /var/www/html"
-               // """
-            }
-        }
+                    //Debugging printing the output
+                    echo "Test Output: ${output}"
 
-        stage('Run Selenium Tests') {
-            steps {
-                echo 'Running Selenium Tests...'
-                script {
-                    try {
-                        sh 'node selenium-tests/test_form.js'
+                    //Write the result to a file
+
+                    if(output.contains('Test Success')){
                         writeFile file: env.TEST_RESULT_FILE, text: 'true'
-                    } catch (Exception e) {
+                    }else{
                         writeFile file: env.TEST_RESULT_FILE, text: 'false'
                     }
+                }catch (Exception e) {
+                    echo "Test failed: ${e.message}"
+                    writeFile file: env.TEST_RESULT_FILE, text: 'false'
                 }
             }
-        }
+             }
+        } 
+        stage('Staging Environment'){
+             when{
+               expression {
+                 // Read the test result from the file id true continue
+                def testResult = readFile(env.TEST_RESULT_FILE).trim()
+                return testResult == 'true'
+                }           
+             }
+            steps{
+             echo 'Staging...'
+            }
+        } 
+        stage('Production Environment'){
+             when{
+               expression {
+                 // Read the test result from the file id true continue
+                def testResult = readFile(env.TEST_RESULT_FILE).trim()
+                return testResult == 'true'
+                }           
+             }
+            steps{
+            echo 'Production...'
+            }
+        } 
+    }
 
-        stage('Deploy to Production') {
-            when {
-                expression {
-                    def result = readFile(env.TEST_RESULT_FILE).trim()
-                    return result == 'true'
-                }
+}
