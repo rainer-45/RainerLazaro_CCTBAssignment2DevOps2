@@ -3,8 +3,8 @@ pipeline{
     environment {
     TEST_RESULT_FILE = 'test_result.txt'
     REPO_URL = 'https://github.com/rainer-45/RainerLazaro_CCTBAssignment2DevOps2'
-    TESTING_SERVER = '18.215.174.194'
-    PRODUCTION_SERVER = '3.91.56.136'
+    TESTING_SERVER = '52.200.11.36'
+    PRODUCTION_SERVER = '107.21.78.91'
     }
 
  stages{
@@ -19,6 +19,11 @@ pipeline{
         stage('Deploy to Testing'){
             steps{
                 echo 'Deploying to testing server.....'
+                sshagent(['ssh-key-id']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ec2-user@$TESTING_SERVER "hostname && whoami"
+                    '''
+                }
             }
         } 
         stage('Selenium Testing'){
