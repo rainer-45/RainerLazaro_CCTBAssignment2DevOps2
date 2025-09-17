@@ -24,6 +24,7 @@ pipeline{
                         ssh -o StrictHostKeyChecking=no ec2-user@$TESTING_SERVER "hostname && whoami"
                     '''
                 }
+                echo 'I am here xx'
             }
         } 
         stage('Selenium Testing'){
